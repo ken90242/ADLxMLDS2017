@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python load_rnn_model.py $1 $2
+python3 load_rnn_model.py $1 $2

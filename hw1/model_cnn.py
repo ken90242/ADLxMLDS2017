@@ -7,7 +7,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import np_utils
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, LSTM, Masking, Bidirectional, BatchNormalization, Conv1D
+from keras.layers import Dense, Dropout, Flatten, LSTM, Masking, Bidirectional, BatchNormalization, Conv2D, Reshape, MaxPooling2D
 from keras.optimizers import adam
 
 from tqdm import tqdm
@@ -84,10 +84,15 @@ for sentence in tqdm(a, total=len(a)):
 input_shape = np.array(x_train).shape
 print(input_shape)
 model = Sequential()
-# model.add(Masking(mask_value=0.))
-model.add(BatchNormalization(input_shape=(input_shape[1], input_shape[2])))
-model.add(Conv1D(128, padding = 'causal', kernel_size = 8,))
-model.add(LSTM(512, return_sequences=False))
+model.add(Reshape((31, TRAIN_DIMENSION, 1),input_shape=(input_shape[1], input_shape[2])))
+model.add(BatchNormalization())
+
+model.add(Conv2D(8, kernel_size=(3, 3),
+          	activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=None, padding='valid', data_format=None))
+model.add(Reshape((14, 264)))
+model.add(Bidirectional(LSTM(512, return_sequences=False)))
+model.add(Dropout(0.2))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(48, activation='softmax'))
