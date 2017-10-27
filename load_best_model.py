@@ -29,7 +29,7 @@ def get_num_lines(file_path):
 
 idx2char = pickle.load(open('./idx2char.pkl', 'rb'))
 
-model = load_model('./rnn_model.h5')
+model = load_model('./best_model.h5')
 print(model.summary())
 
 
