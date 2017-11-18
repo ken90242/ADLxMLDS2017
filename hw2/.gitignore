@@ -2,6 +2,4 @@ MLDS_hw2_data/
 MLDS_hw2_data.tar.gz
 models/
 *.txt
-.DS_Store
-../.DS_Store
-../hw1/.DS_Store
+.DS_Store/
