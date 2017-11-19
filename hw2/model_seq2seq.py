@@ -8,6 +8,26 @@ import numpy as np
 from random import randint
 from keras.preprocessing import sequence
 
+
+# Global Parameters
+video_train_feat_path = './MLDS_hw2_data/training_data/feat'
+video_train_data_path = './MLDS_hw2_data/training_label.json'
+
+model_path = './models'
+
+# Train Parameters
+dim_image = 4096
+dim_hidden= 256
+
+n_video_lstm_step = 80
+n_caption_lstm_step = 25
+n_frame_step = 80
+
+n_epochs = 200
+batch_size = 200
+learning_rate = 0.001
+
+
 class Video_Caption_Generator():
   def __init__(self, dim_image, n_words, dim_hidden, batch_size, n_lstm_steps, n_video_lstm_step, n_caption_lstm_step, bias_init_vector=None):
     self.dim_image = dim_image
@@ -60,13 +80,13 @@ class Video_Caption_Generator():
     state1 = tf.zeros([self.batch_size, self.lstm1.state_size])
     state2 = tf.zeros([self.batch_size, self.lstm2.state_size])
 
-    # logit_words = tf.zeros([self.batch_size, self.n_words])
+    logit_words = tf.zeros([self.batch_size, self.n_words])
 
     padding = tf.zeros([self.batch_size, self.dim_hidden])
-    # flip_sampling = tf.placeholder(tf.float32, shape=())
 
     probs = []
     loss = 0.0
+    flip_sampling = 0.2
   #####################  Attention Model #########################
     context_vector = tf.zeros([self.batch_size, self.lstm1.state_size, self.n_video_lstm_step])
 
@@ -113,15 +133,11 @@ class Video_Caption_Generator():
         # caption[:, i] = (200, 1); current_embed = (200, 500)
         # 這裏是將上一句取出，如：A man is talking
         # 在'A'的階段會取出'<bos>'，在'man'的階段會取出'A'，在'is'的階段會取出'man'...等
-        # if(i == 0):
         ground_truth = caption[:, i]
-        # prev_output = tf.argmax(logit_words, axis=1)
+        prev_output = tf.argmax(logit_words, axis=1)
+        sample_result = [ground_truth, prev_output][np.random.choice(2, p=[flip_sampling, 1 - flip_sampling])]
+        current_embed = tf.nn.embedding_lookup(self.Wemb, sample_result)
 
-        # sample_result = [ground_truth, prev_output][np.random.choice(2, p=[tf.to_float(flip_sampling), 1 - tf.to_float(flip_sampling)])]
-        current_embed = tf.nn.embedding_lookup(self.Wemb, ground_truth)
-
-        # else:
-          # current_embed = tf.nn.embedding_lookup(self.Wemb, output2)
 
       with tf.variable_scope("LSTM1"):
         tf.get_variable_scope().reuse_variables()
@@ -173,30 +189,6 @@ class Video_Caption_Generator():
       loss = loss + current_loss
 
     return loss, video, video_mask, caption, caption_mask, probs
-
-#=====================================================================================
-# Global Parameters
-#=====================================================================================
-
-video_train_feat_path = './MLDS_hw2_data/training_data/feat'
-video_train_data_path = './MLDS_hw2_data/training_label.json'
-
-model_path = './models'
-
-#=======================================================================================
-# Train Parameters
-#=======================================================================================
-dim_image = 4096
-dim_hidden= 256
-
-n_video_lstm_step = 80
-n_caption_lstm_step = 25
-n_frame_step = 80
-
-n_epochs = 200
-batch_size = 200
-learning_rate = 0.001
-
 
 def get_video_train_data(video_data_path, video_feat_path):
   video_data = pd.read_json(video_data_path)

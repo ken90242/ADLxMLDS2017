@@ -150,7 +150,7 @@ def get_video_test_data(video_data_path, video_feat_path):
   test_data = video_data[video_data['video_path'].map(lambda x: x in unique_filenames)]
   return test_data
 
-def test(model_path='./model'):
+def test(model_path='./models/model-400'):
   ixtoword = pd.Series(np.load('./mapping/ixtoword.npy').tolist())
 
   bias_init_vector = np.load('./mapping/bias_init_vector.npy')
