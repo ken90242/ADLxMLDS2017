@@ -7,8 +7,8 @@ import sys
 sys.path.append("agent_dir/")
 import rank_based
 
-# import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1" # UNKOWND ERROR for out of memory problem
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" # UNKOWND ERROR for out of memory problem
 
 tf.set_random_seed(1)
 
@@ -43,6 +43,7 @@ class Agent_DQN(Agent):
     self.prioritized = args.prioritized or False
 
     if self.prioritized:
+      print('enable prioritized memory replay')
       self.experience = rank_based.Experience({
         'size': REPLAY_MEMORY,
         'batch_size': BATCH_SIZE,
@@ -126,7 +127,7 @@ class Agent_DQN(Agent):
         avg_sum.append(sum_reward)
         print('Episode: ' + str(episode), ' sum_reward: ' + '{0:.1f}'.format(sum_reward) ,' avg_reward: ' + '{0:.2f}'.format(np.mean(avg_sum)))
         sum_reward = 0
-        if(episode % 30 == 0):
+        if(episode % 100 == 0):
           if self.prioritized: path = 'prioritized_dqn_learning_record.txt'
           else: path = 'dqn_learning_record.txt'
 
@@ -155,8 +156,7 @@ class Agent_DQN(Agent):
     # YOUR CODE HERE #
     ##################
     # Action: ['NOOP', 'FIRE', 'RIGHT', 'LEFT']
-    # EX: [[ 0.03629532  0.0392677   0.03857479  0.03415339]]
-    QValue = self.QValue.eval(feed_dict= { self.stateInput: [observation] })[0]
+    QValue = self.QValue.eval(feed_dict= { self.stateInput: [observation] })[0]# EX: [[ 0.03629532  0.0392677   0.03857479  0.03415339]]
     action = 0
 
     if random.random() <= self.epsilon:
@@ -164,7 +164,7 @@ class Agent_DQN(Agent):
     else:
       action = np.argmax(QValue)
 
-    # change episilon
+    # Change episilon
     if self.epsilon > FINAL_EPSILON and self.timeStep > OBSERVE:
       self.epsilon -= (INITIAL_EPSILON - FINAL_EPSILON) / EXPLORE
 
@@ -198,8 +198,7 @@ class Agent_DQN(Agent):
     self.timeStep += 1
 
   def trainQNetwork(self):
-    # Step 1: obtain random minibatch from replay memory
-
+    # Obtain random minibatch from replay memory
     if self.prioritized:
       minibatch, ISWeights, e_id = self.experience.sample(self.timeStep)
     else:
@@ -209,18 +208,22 @@ class Agent_DQN(Agent):
     reward_batch = [data[2] for data in minibatch] # reward batch
     nextState_batch = [data[3] for data in minibatch] # newState batch
 
-    # Step 2: calculate y 
     y_batch = []
     # Original output format is like "[[ 0.03629532  0.0392677   0.03857479  0.03415339]]"
-    QValue_batch = self.QValueT.eval(feed_dict={ self.stateInputT: nextState_batch })
-    # doubleQValue_batch = self.QValue.eval(feed_dict={ self.stateInput: nextState_batch })
+    Q_action_batch = self.QValue.eval(feed_dict={ self.stateInput: nextState_batch } )# for prioritized purpose
+    QValue_batch = self.QValueT.eval(feed_dict={ self.stateInputT: nextState_batch }) 
     for i in range(0, BATCH_SIZE):
       terminal = minibatch[i][4]
 
       if terminal:
-        y_batch.append(reward_batch[i])
+        y_batch.append(reward_batch[i]) 
+      else if self.prioritized:
+        # double q learning
+        y_batch.append(reward_batch[i] + GAMMA * QValue_batch[i][np.argmax(Q_action_batch[i])])
       else:
+        # normal dqn
         y_batch.append(reward_batch[i] + GAMMA * np.max(QValue_batch[i]))
+        
 
     if self.timeStep % 4 == 0:
       if self.prioritized:
@@ -242,9 +245,10 @@ class Agent_DQN(Agent):
 
     # save network every 100000 iteration
     if self.timeStep % 10000 == 0:
-      print('# Rebalance memory tree, Network weights is saved.')
-      self.experience.rebalance()
-      if (self.prioritized): save_path = 'saved_dqn_prioritized/dqn'
+      if (self.prioritized): 
+        save_path = 'saved_dqn_prioritized/dqn'
+        self.experience.rebalance()
+
       else: save_path = 'saved_dqn/dqn'
       self.saver.save(self.session, save_path, global_step=self.timeStep)
 
