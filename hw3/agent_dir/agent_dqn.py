@@ -217,7 +217,7 @@ class Agent_DQN(Agent):
 
       if terminal:
         y_batch.append(reward_batch[i]) 
-      else if self.prioritized:
+      elif self.prioritized:
         # double q learning
         y_batch.append(reward_batch[i] + GAMMA * QValue_batch[i][np.argmax(Q_action_batch[i])])
       else:
