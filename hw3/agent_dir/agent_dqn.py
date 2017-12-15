@@ -297,7 +297,7 @@ class Agent_DQN(Agent):
     h_conv3 = tf.nn.relu(self.conv2d(h_conv2, W_conv3, 1) + b_conv3)
     # h_conv3_shape = h_conv3.get_shape().as_list()
     h_conv3_flat = tf.reshape(h_conv3, [-1, 3136])
-    h_fc1 = tf.nn.leaky_relu(tf.matmul(h_conv3_flat, W_fc1) + b_fc1, alpha=0.01)
+    h_fc1 = self.leaky_relu(tf.matmul(h_conv3_flat, W_fc1) + b_fc1, alpha=0.01)
 
     # Q Value layer
     QValue = tf.matmul(h_fc1, W_fc2) + b_fc2
@@ -317,3 +317,6 @@ class Agent_DQN(Agent):
 
   def conv2d(self, x, W, stride):
     return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding="VALID")
+
+  def leaky_relu(self, x, alpha):
+    return tf.nn.relu(x) - alpha * tf.nn.relu(-x)
