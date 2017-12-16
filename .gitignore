@@ -1,8 +1,8 @@
 1023ADL演講心得.pdf
 *.pages
 hw3/video/
-hw3/environment.py
 hw3/saved_dqn_bk/
 hw3/environment.py
 hw3/test.py
 hw3/report/
+*.pyc
