@@ -6,3 +6,6 @@ hw3/environment.py
 hw3/test.py
 hw3/report/
 *.pyc
+hw3/reportMaterial/
+hw3/test.py
+hw4/faces/
