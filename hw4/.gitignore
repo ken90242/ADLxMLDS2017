@@ -1,0 +1,8 @@
+_backup/
+Data/
+faces/
+logs/
+sample_testing_text.txt
+tags_clean.csv
+noise_pkl
+__pycache__/

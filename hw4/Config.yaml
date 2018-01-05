@@ -1,0 +1,23 @@
+# Noise Dimension
+z_dim: 100
+
+# Text feature dimension
+t_dim: 256
+
+batch_size: 64
+
+# height / width
+image_size: 64
+
+channels: 3
+
+# Number of conv in the first layer gen
+gf_dim: 64
+
+# Number of conv in the first layer discr
+df_dim: 64
+
+# Dimension of gen untis for for fully connected layer 1024
+gfc_dim: 1024
+
+caption_vector_length: 2400
