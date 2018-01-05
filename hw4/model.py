@@ -166,9 +166,9 @@ class GAN:
 
 		# Loss function using L2 Regularization
 		# regularizers = 0
-		# for d_weight in d_vars:
-		# 	regularizers += tf.nn.l2_loss(d_weight)
-		# d_loss = tf.reduce_mean(d_loss + 0.01 * regularizers)
+		for d_weight in d_vars:
+			regularizers += tf.nn.l2_loss(d_weight)
+		d_loss = tf.reduce_mean(d_loss + 0.01 * regularizers)
     
 
 
@@ -351,11 +351,11 @@ class GAN:
 			tiled_embeddings = tf.tile(reduced_text_embeddings, [1, 4, 4, 1], name='tiled_embeddings') # [64, 4, 4, 256]
 			h3_concat = tf.concat( [h3, tiled_embeddings], axis=3, name='h3_concat')
 			h3_new = lrelu( self.d_bn4(conv2d(h3_concat, self.options['df_dim'] * 8, 1, 1, 1, 1, name='d_h3_conv_new'))) # [64, 4, 4, 512]
-			
 			# h4 = linear(tf.reshape(h3_new, [self.options['batch_size'], -1]), 1, 'd_h3_lin') # [64, 1]
 
-			h4 = tf.reshape(h3_new, [self.options['batch_size'], -1]) # [64, 5] -> [64, 1]
-			h4 = linear(minibatch(h4, num_kernels=150, kernel_dim=8), 1, 'd_h3_lin')
+			h4 = tf.reshape(h3_new, [self.options['batch_size'], -1]) # [64, 8192]
+			h4 = linear(minibatch(h4, num_kernels=150, kernel_dim=8), 1, 'd_h3_lin') # [64, 1]
+			# print(h4)
 
 			return tf.nn.sigmoid(h4), h4
 
