@@ -25,9 +25,13 @@ def main():
 	_, _, _, _, _ = gan.build_model()
 	sess = tf.InteractiveSession()
 	saver = tf.train.Saver()
-	saver.restore(sess, 'Models/model')
+	saver.restore(sess, 'model')
 	
 	input_tensors, outputs = gan.build_generator()
+	test_ids=[]
+	with open( caption_path ) as f:
+		for line in f:
+			test_ids.append(line.split(',')[0])	
 
 	with open( caption_path ) as f:
 		captions = f.read().split('\n')
@@ -60,9 +64,10 @@ def main():
 			os.unlink(join('samples/' + f))
 
 	for i, cn in enumerate(range(0, len(caption_vectors))):
+		test_id = test_ids[i]
 		for j, im in enumerate( caption_image_dic[ cn ] ):
-			scipy.misc.imsave( join('samples/sample_{}_{}.jpg'.format(i + 1, j + 1)) , im)
-			print("Generate sample_{}_{}.jpg in samples/".format(i + 1, j + 1))
+			scipy.misc.imsave( join('samples/sample_{}_{}.jpg'.format(test_id, j + 1)) , im)
+			print("Generate sample_{}_{}.jpg in samples/".format(test_id, j + 1))
 
 
 if __name__ == '__main__':
