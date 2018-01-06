@@ -165,7 +165,7 @@ class GAN:
 		g_vars = [var for var in t_vars if 'g_' in var.name]
 
 		# Loss function using L2 Regularization
-		# regularizers = 0
+		regularizers = 0
 		for d_weight in d_vars:
 			regularizers += tf.nn.l2_loss(d_weight)
 		d_loss = tf.reduce_mean(d_loss + 0.01 * regularizers)
