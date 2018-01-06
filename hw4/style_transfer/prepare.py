@@ -38,7 +38,7 @@ class Prepare:
 
 		self.move()
 
-	def move(self, srcDir='faces', descDir='datasets/hair2brown'):
+	def move(self, srcDir='../faces', descDir='datasets/hair2brown'):
 		if(exists(descDir)): shutil.rmtree(descDir)
 		os.mkdir(descDir)
 		for dirType in ['trainA', 'trainB', 'testA', 'testB']:

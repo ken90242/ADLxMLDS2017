@@ -47,7 +47,7 @@ def main():
 
 		caption_images = []
 		# z_noise = np.random.uniform(-1, 1, [model_parameters['batch_size'], model_parameters['z_dim']])
-		z_noise = z_noise_arr[cn]
+		z_noise = z_noise_arr[cn] if cn < len(z_noise_arr) else random.choice(z_noise_arr)
 		caption = [ caption_vector[0:2400] ] * model_parameters['batch_size']
 		
 		[ gen_image ] = sess.run( [ outputs['generator'] ], 
