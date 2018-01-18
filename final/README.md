@@ -42,7 +42,7 @@ skimage(python-skimage)|0.13.1
 ## 2. How to train
 ```
 # [img_path]: Directory containing images(x-ray)
-sh train.sh [img_path]
+sh train.sh [img_path] # e.g. sh train.sh ./images/
 ```
 ## 3. How to Test
 ```
