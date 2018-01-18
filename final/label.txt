@@ -1,0 +1,8 @@
+0,Atelectasis
+1,Cardiomegaly
+2,Effusion
+3,Infiltration
+4,Mass
+5,Nodule
+6,Pneumonia
+7,Pneumothorax
