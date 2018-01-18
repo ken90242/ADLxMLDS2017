@@ -24,7 +24,7 @@
 
   (Automatically be downloaded by our script)
   
-- **Our vgg19 original model**
+- **Our model**
 
   (Automatically be downloaded by our script)
 
