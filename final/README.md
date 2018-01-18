@@ -5,7 +5,7 @@
 > 組員：[吳俊德], [郭勅君], [吳中群], [黃于真], [韓宏光]
 
 ## 1. Required Environment
-#### - OS version
+### - OS version
 ```Ubuntu 16.04.3 LTS (GNU/Linux 4.4.0-104-generic x86_64)```
 
 ### - Python Version
