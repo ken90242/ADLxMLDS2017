@@ -13,12 +13,19 @@
 
 ### - Data Needed
 - **Image files** list in **Data_Entry_2017_v2.csv**
+
   (You can download from ftp://140.112.107.150/DeepQ-Learning.zip)
+  
 - **npy files**(img feature & label vector)
+
   (Automatically be downloaded by our script)
+  
 - **Pretrain vgg19 original model**
+
   (Automatically be downloaded by our script)
+  
 - **Our vgg19 original model**
+
   (Automatically be downloaded by our script)
 
 ### Module & Version Requirement 
