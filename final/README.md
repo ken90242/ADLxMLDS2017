@@ -28,7 +28,16 @@
 
   (Automatically be downloaded by our script)
 
-### Module & Version Requirement 
+### - Module & Version Requirement
+**Module Name**|**Version**
+---|---
+numpy|1.13.3
+pandas|0.21.0
+skimage|0.13.1
+tensorflow|1.4.0
+scipy|0.19.1
+cv2(opencv-python)|3.3.0
+skimage(python-skimage)|0.13.1
 
 ## 2. How to train
 ```
